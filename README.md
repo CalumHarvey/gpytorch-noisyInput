@@ -22,6 +22,41 @@ GPyTorch provides (1) significant GPU acceleration (through MVM based inference)
 (3) easy integration with deep learning frameworks.
 
 
+## Fork: Uncertain Input Support
+
+This fork adds support for Gaussian process regression when the **training and test inputs are themselves uncertain**, not just the targets. Standard GPs assume inputs are known exactly; this extension lets each input carry its own mean and variance, folding that variance into the covariance computation directly, based on Dallaire, Besse and Chaib draa, "Learning Gaussian Process Models from Uncertain Data" (ICONIP 2009).
+
+Each input point is encoded as a `(mean, variance)` pair instead of a single value, so a training set of N points is an `N x 2` tensor:
+
+```python
+train_x = torch.stack((train_x_mean, train_x_var), dim=1)
+```
+
+New modules added for this:
+
+| Class | Purpose |
+|---|---|
+| `gpytorch.kernels.UncertainKernel` | Noise-aware RBF kernel; accepts `(mean, variance)` pairs and outputs a covariance matrix |
+| `gpytorch.means.UncertainZeroMean` | Zero mean function adapted to read the mean column of the input pair |
+| `gpytorch.means.UncertainConstantMean` | Learned constant mean function adapted the same way |
+
+```python
+class ExactGPModel(gpytorch.models.ExactGP):
+    def __init__(self, train_x, train_y, likelihood):
+        super().__init__(train_x, train_y, likelihood)
+        self.mean_module = gpytorch.means.UncertainZeroMean()
+        self.covar_module = gpytorch.kernels.ScaleKernel(gpytorch.kernels.UncertainKernel())
+
+    def forward(self, x):
+        mean_x = self.mean_module(x)
+        covar_x = self.covar_module(x)
+        return gpytorch.distributions.MultivariateNormal(mean_x, covar_x)
+```
+
+See [`examples/01_Exact_GPs/Uncertain_Input_GP_Regression.ipynb`](examples/01_Exact_GPs/Uncertain_Input_GP_Regression.ipynb) for a full worked example, including training and plotting predictions with uncertainty bars.
+
+Note: at prediction time, test inputs must also be padded with a variance column (zero if the test input is known exactly). Training and test batches can be different sizes.
+
 ## Examples, Tutorials, and Documentation
 
 See our [**documentation, examples, tutorials**](https://gpytorch.readthedocs.io/en/latest/) on how to construct all sorts of models in GPyTorch.
