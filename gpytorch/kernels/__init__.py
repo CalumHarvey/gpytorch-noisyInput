@@ -38,6 +38,7 @@ from .scale_kernel import ScaleKernel
 from .spectral_delta_kernel import SpectralDeltaKernel
 from .spectral_mixture_kernel import SpectralMixtureKernel
 from .spherical_linear_kernel import SphericalLinearKernel
+from .uncertain_kernel import UncertainKernel
 
 __all__ = [
     "keops",
@@ -78,4 +79,5 @@ __all__ = [
     "SpectralMixtureKernel",
     "SphericalLinearKernel",
     "Matern52KernelGrad",
+    "UncertainKernel",
 ]

@@ -384,15 +384,11 @@ class ExactGP(GP):
         full_inputs = []
         batch_shape = train_inputs[0].shape[:-2]
         for train_input, input in zip(train_inputs, test_inputs, strict=True):
-            # Make sure the batch shapes agree for training/test data
-            if batch_shape != train_input.shape[:-2]:
-                batch_shape = torch.broadcast_shapes(batch_shape, train_input.shape[:-2])
-                train_input = train_input.expand(*batch_shape, *train_input.shape[-2:])
-            if batch_shape != input.shape[:-2]:
-                batch_shape = torch.broadcast_shapes(batch_shape, input.shape[:-2])
-                train_input = train_input.expand(*batch_shape, *train_input.shape[-2:])
-                input = input.expand(*batch_shape, *input.shape[-2:])
-            full_inputs.append(torch.cat([train_input, input], dim=-2))
+            # Batch-shape broadcasting/expand removed and concat switched from dim=-2
+            # to dim=0: uncertain-input train/test tensors are stacked along a leading
+            # dimension rather than treated as a batch dimension, so the original
+            # broadcast-and-concat-on-last-2-dims logic doesn't apply here.
+            full_inputs.append(torch.cat([train_input, input], dim=0))
 
         # Get joint distribution (lazy when settings.lazily_evaluate_kernels is True)
         full_output = super().__call__(*full_inputs, **kwargs)

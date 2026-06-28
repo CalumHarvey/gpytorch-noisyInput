@@ -10,6 +10,8 @@ from .linear_mean_grad import LinearMeanGrad
 from .linear_mean_gradgrad import LinearMeanGradGrad
 from .mean import Mean
 from .multitask_mean import MultitaskMean
+from .uncertain_constant_mean import UncertainConstantMean
+from .uncertain_zero_mean import UncertainZeroMean
 from .zero_mean import ZeroMean
 
 __all__ = [
@@ -21,5 +23,7 @@ __all__ = [
     "LinearMeanGrad",
     "LinearMeanGradGrad",
     "MultitaskMean",
+    "UncertainConstantMean",
+    "UncertainZeroMean",
     "ZeroMean",
 ]

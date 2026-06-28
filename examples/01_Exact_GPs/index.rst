@@ -10,6 +10,8 @@ All examples here use exact GP inference.
 - `Fully Bayesian GP Regression`_ demonstrates how to perform fully Bayesian inference by sampling the GP hyperparameters
   using NUTS. (This example requires Pyro to be installed).
 - `Distributional GP Regression`_ is an example of how to take account of uncertainty in inputs.
+- `Uncertain Input GP Regression`_ is another example of regression with uncertain inputs, using a closed-form
+  noise-aware RBF kernel.
 - `Dirichlet Classification`_ is an example of how to perform regression on classification labels via an approximate
   likelihood.
 
@@ -22,6 +24,7 @@ All examples here use exact GP inference.
    Spectral_Mixture_GP_Regression.ipynb
    GP_Regression_Fully_Bayesian.ipynb
    GP_Regression_DistributionalKernel.ipynb
+   Uncertain_Input_GP_Regression.ipynb
    GP_Regression_on_Classification_Labels.ipynb
 
 .. _Simple GP Regression:
@@ -35,6 +38,9 @@ All examples here use exact GP inference.
 
 .. _Distributional GP Regression:
   ./GP_Regression_DistributionalKernel.ipynb
+
+.. _Uncertain Input GP Regression:
+  ./Uncertain_Input_GP_Regression.ipynb
 
 .. _Dirichlet Classification:
   ./GP_Regression_on_Classification_Labels.ipynb

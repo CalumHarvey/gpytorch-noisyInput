@@ -160,7 +160,12 @@ class FixedGaussianNoise(Module):
         self, *params: Any, shape: torch.Size | None = None, noise: Tensor | None = None, **kwargs: Any
     ) -> DiagLinearOperator:
         if shape is None:
-            p = params[0] if torch.is_tensor(params[0]) else params[0][0]
+            # Support dict-style params (e.g. uncertain-input parameterizations) by
+            # pulling the first tensor out of the dict instead of assuming tensor/tuple.
+            if type(params[0]) == dict:
+                p = list(params[0].values())[0]
+            else:
+                p = params[0] if torch.is_tensor(params[0]) else params[0][0]
             shape = p.shape if len(p.shape) == 1 else p.shape[:-1]
 
         if noise is not None:
